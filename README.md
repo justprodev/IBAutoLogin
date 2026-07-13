@@ -36,6 +36,8 @@ flowchart TD
 
 ## Installation
 
+You can download the latest release from [GitHub releases](https://github.com/justprodev/IBAutoLogin/releases).
+
 ### 1. Build from source
 
 ```bash
