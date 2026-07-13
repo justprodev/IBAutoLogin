@@ -11,13 +11,11 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.attribute.BasicFileAttributes
 import java.security.KeyStore
 import javax.crypto.spec.SecretKeySpec
-
-private const val JKS_FILE_NAME = "autologin.jks"
-private val JKS_PASSWORD = "ibautologin".toCharArray()
-private const val ALIAS_USERNAME = "username"
-private const val ALIAS_PASSWORD = "password"
 
 class JksStorage : IStorage {
     private val jksFile = File(JKS_FILE_NAME)
@@ -68,6 +66,11 @@ class JksStorage : IStorage {
     companion object {
         private val logger = LoggerFactory.getLogger(JksStorage::class.java)
 
+        private const val JKS_FILE_NAME = "autologin.jks"
+        private val JKS_PASSWORD = generatePassword()
+        private const val ALIAS_USERNAME = "username"
+        private const val ALIAS_PASSWORD = "password"
+
         private fun readEntry(ks: KeyStore, alias: String): String {
             val entry = ks.getEntry(alias, KeyStore.PasswordProtection(JKS_PASSWORD))
                     as? KeyStore.SecretKeyEntry ?: return ""
@@ -80,6 +83,12 @@ class JksStorage : IStorage {
                 alias, KeyStore.SecretKeyEntry(secretKey),
                 KeyStore.PasswordProtection(JKS_PASSWORD)
             )
+        }
+
+        private fun generatePassword(): CharArray {
+            val homePath = Paths.get(System.getProperty("user.home"))
+            val attributes = Files.readAttributes(homePath, BasicFileAttributes::class.java)
+            return attributes.creationTime().toMillis().toString().toCharArray()
         }
     }
 }

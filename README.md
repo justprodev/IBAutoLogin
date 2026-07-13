@@ -44,10 +44,10 @@ flowchart TD
 
 ### 2. Copy the JAR to IBGateway
 
-Copy `IBAutoLogin-1.0.jar` into the IBGateway `jars` directory:
+Copy `IBAutoLogin-1.0.1.jar` into the IBGateway `jars` directory:
 
 ```
-C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.jar
+C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.1.jar
 ```
 
 > **Note:** Adjust the path according to your IBGateway version (e.g., `1046`).
@@ -58,7 +58,7 @@ Add the following lines to `ibgateway.vmoptions` (e.g., `C:\Jts\ibgateway\1046\i
 
 ```properties
 ### IBAutoLogin
--javaagent:C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.jar
+-javaagent:C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.1.jar
 ```
 
 ### 4. Restart IBGateway
@@ -67,13 +67,9 @@ The agent is now active. On the first run, log in manually — credentials will 
 
 ## How It Stores Credentials
 
-Currently, credentials are stored in a **PKCS#12 keystore** file named `autologin.jks` in the IBGateway working directory.
+Credentials are stored in a **PKCS#12 keystore** file named `autologin.jks` in the IBGateway working directory.
 
 **We strongly recommend enabling two-factor authentication (2FA) using the IBKR mobile app**
-
-Additionally, you can empower security by yourself - BitLocker, etc. to encrypt the IBGateway working directory.
-
-*TODO: Future versions may support alternative storage methods, such as the Windows Credential Manager.*
 
 ## Logging
 

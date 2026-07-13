@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.justprodev.trading"
-version = "1.0"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -12,9 +12,12 @@ repositories {
 
 dependencies {
     compileOnly("org.slf4j:slf4j-api:2.0.17")
+
     testImplementation(kotlin("test"))
     testImplementation("io.mockk:mockk:1.14.0")
     testImplementation("org.slf4j:slf4j-api:2.0.17")
+    // Source: https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    testImplementation("ch.qos.logback:logback-classic:1.5.38")
 }
 
 kotlin {
