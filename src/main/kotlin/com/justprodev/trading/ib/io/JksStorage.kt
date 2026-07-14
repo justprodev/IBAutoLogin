@@ -7,15 +7,16 @@ package com.justprodev.trading.ib.io
 
 import com.justprodev.trading.ib.model.Credentials
 import com.justprodev.trading.ib.model.IStorage
+import com.microsoft.credentialstorage.StorageProvider
+import com.microsoft.credentialstorage.model.StoredCredential
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.attribute.BasicFileAttributes
 import java.security.KeyStore
 import javax.crypto.spec.SecretKeySpec
+import kotlin.random.Random
+
 
 class JksStorage : IStorage {
     private val jksFile = File(JKS_FILE_NAME)
@@ -67,7 +68,7 @@ class JksStorage : IStorage {
         private val logger = LoggerFactory.getLogger(JksStorage::class.java)
 
         private const val JKS_FILE_NAME = "autologin.jks"
-        private val JKS_PASSWORD = generatePassword()
+        private val JKS_PASSWORD = createOrGetStoragePassword()
         private const val ALIAS_USERNAME = "username"
         private const val ALIAS_PASSWORD = "password"
 
@@ -85,10 +86,21 @@ class JksStorage : IStorage {
             )
         }
 
-        private fun generatePassword(): CharArray {
-            val homePath = Paths.get(System.getProperty("user.home"))
-            val attributes = Files.readAttributes(homePath, BasicFileAttributes::class.java)
-            return attributes.creationTime().toMillis().toString().toCharArray()
+        private fun createOrGetStoragePassword(): CharArray {
+            // Get a secure store instance.
+            val credentialStorage = StorageProvider.getCredentialStorage(true, StorageProvider.SecureOption.REQUIRED)
+                ?: throw IllegalStateException("No IC Storage found")
+
+            var storedCredential = credentialStorage.get(JKS_FILE_NAME)
+
+            if(storedCredential == null) {
+                storedCredential = StoredCredential(JKS_FILE_NAME, Random.nextLong().toString().toCharArray())
+                if(!credentialStorage.add(JKS_FILE_NAME, storedCredential)) {
+                    throw IllegalStateException("Cannot store JKS password in IC storage")
+                }
+            }
+
+            return storedCredential.password
         }
     }
 }

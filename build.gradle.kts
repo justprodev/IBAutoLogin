@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.justprodev.trading"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
@@ -12,6 +12,9 @@ repositories {
 
 dependencies {
     compileOnly("org.slf4j:slf4j-api:2.0.17")
+
+    // Source: https://mvnrepository.com/artifact/com.microsoft/credential-secure-storage
+    implementation("com.microsoft:credential-secure-storage:1.0.3")
 
     testImplementation(kotlin("test"))
     testImplementation("io.mockk:mockk:1.14.0")
