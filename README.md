@@ -2,6 +2,8 @@
 
 **IBAutoLogin** is a Java Agent that automates the login process for [Interactive Brokers Gateway (IBGateway)](https://www.interactivebrokers.com/). It securely stores credentials in a PKCS#12 keystore and automatically fills the login form on subsequent launches.
 
+<video src="https://github.com/user-attachments/assets/a8e4cfdd-6a12-45b1-b6ca-9904e52ab498"></video>
+
 ## How It Works
 
 ```mermaid
