@@ -48,10 +48,10 @@ You can download the latest release from [GitHub releases](https://github.com/ju
 
 ### 2. Copy the JAR to IBGateway
 
-Copy `IBAutoLogin-1.0.1.jar` into the IBGateway `jars` directory:
+Copy `IBAutoLogin-1.0.2.jar` into the IBGateway `jars` directory:
 
 ```
-C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.1.jar
+C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.2.jar
 ```
 
 > **Note:** Adjust the path according to your IBGateway version (e.g., `1046`).
@@ -62,7 +62,7 @@ Add the following lines to `ibgateway.vmoptions` (e.g., `C:\Jts\ibgateway\1046\i
 
 ```properties
 ### IBAutoLogin
--javaagent:C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.1.jar
+-javaagent:C:\Jts\ibgateway\1046\jars\IBAutoLogin-1.0.2.jar
 ```
 
 ### 4. Restart IBGateway
