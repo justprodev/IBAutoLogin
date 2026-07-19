@@ -7,9 +7,10 @@ package com.justprodev.trading.ib
 
 import com.justprodev.trading.ib.model.IStorage
 import com.justprodev.trading.ib.ui.LoginForm
+import com.justprodev.trading.ib.utils.findButton
+import com.justprodev.trading.ib.utils.title
 import org.slf4j.LoggerFactory
 import java.awt.AWTEvent
-import java.awt.Dialog
 import java.awt.Toolkit
 import java.awt.Window
 import java.awt.event.WindowEvent
@@ -22,15 +23,15 @@ class IBAutoLogin(private val storage: IStorage) {
             {
                 val window = it.source as? Window ?: return@addAWTEventListener
                 when (it.id) {
-                    WindowEvent.WINDOW_OPENED -> onWindowOpened(window)
+                    WindowEvent.WINDOW_ACTIVATED -> onWindowActivated(window)
                 }
             },
             AWTEvent.WINDOW_EVENT_MASK
         )
     }
 
-    private fun onWindowOpened(window: Window) {
-        logger.info("IBAutoLogin - Window opened: $window")
+    private fun onWindowActivated(window: Window) {
+        logger.info("IBAutoLogin - Window activated: $window")
 
         when {
             LoginForm.isLoginWindow(window) -> try {
@@ -40,11 +41,20 @@ class IBAutoLogin(private val storage: IStorage) {
                 logger.error("IBAutoLogin - Error occurred while binding LoginForm to $window", e)
             }
 
-           window is Dialog && window.title.startsWith("Unrecognized Username") -> {
-               logger.info("IBAutoLogin - Unrecognized Username dialog detected")
-               storage.clear()
-           }
-        }
+            window.title.startsWith("Unrecognized Username") -> {
+                logger.info("IBAutoLogin - Unrecognized Username dialog detected")
+                storage.clear()
+            }
 
+            window.title.endsWith("Re-login is required", true) -> {
+                logger.info("IBAutoLogin - Re-login is required dialog detected")
+                window.findButton("Re-login")?.doClick()
+            }
+
+            window.title.endsWith("Exit Session Setting") -> {
+                logger.info("IBAutoLogin - Exit Session Setting dialog detected")
+                window.findButton("OK")?.doClick()
+            }
+        }
     }
 }

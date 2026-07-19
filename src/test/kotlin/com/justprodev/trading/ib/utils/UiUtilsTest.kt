@@ -116,4 +116,18 @@ class UiUtilsTest {
 
         assertEquals(4, visited.size, "Should visit panel + 3 children")
     }
+
+    @Test
+    fun `find button`() {
+        val button1 = JButton("button1")
+        val button2 = JButton("button2")
+        val inner = JPanel()
+        inner.add(button1)
+        inner.add(button2)
+        val outer = JPanel()
+        outer.add(inner)
+
+        assertSame(button1, outer.findButton("button1"))
+        assertSame(button2, outer.findButton("button2"))
+    }
 }

@@ -6,13 +6,16 @@
 package com.justprodev.trading.ib
 
 import com.justprodev.trading.ib.model.IStorage
-import io.mockk.*
+import io.mockk.clearAllMocks
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import java.awt.*
-import java.awt.event.WindowEvent
-import javax.swing.*
+import java.awt.EventQueue
+import javax.swing.JButton
+import javax.swing.JDialog
 
 class IBAutoLoginTest {
 
@@ -38,17 +41,7 @@ class IBAutoLoginTest {
         val errorDialog = JDialog()
         errorDialog.title = "Unrecognized Username or Password"
         errorDialog.isVisible = true
-
-        try {
-            val event = WindowEvent(errorDialog, WindowEvent.WINDOW_OPENED)
-            Toolkit.getDefaultToolkit().systemEventQueue.postEvent(event)
-            // Give time for EventQueue to process the event
-            Thread.sleep(200)
-            EventQueue.invokeAndWait { /* pump */ }
-        } finally {
-            errorDialog.dispose()
-        }
-
+        EventQueue.invokeAndWait { /* pump */ }
         verify(atLeast = 1) { storage.clear() }
     }
 
@@ -59,16 +52,41 @@ class IBAutoLoginTest {
         val normalDialog = JDialog()
         normalDialog.title = "Some Other Dialog"
         normalDialog.isVisible = true
-
-        try {
-            val event = WindowEvent(normalDialog, WindowEvent.WINDOW_OPENED)
-            Toolkit.getDefaultToolkit().systemEventQueue.postEvent(event)
-            Thread.sleep(200)
-            EventQueue.invokeAndWait { /* pump */ }
-        } finally {
-            normalDialog.dispose()
-        }
-
+        EventQueue.invokeAndWait { /* pump */ }
         verify(exactly = 0) { storage.clear() }
+    }
+
+    @Test
+    fun `re-login dialog triggers re-login button click`() {
+        IBAutoLogin(storage)
+
+        val reLoginDialog = JDialog()
+        val button = JButton("Re-login").apply {
+            addActionListener {
+                reLoginDialog.isVisible = false
+            }
+        }
+        reLoginDialog.title = "U12345 Re-login Is Required"
+        reLoginDialog.add(button)
+        reLoginDialog.isVisible = true
+        EventQueue.invokeAndWait { /* pump */ }
+        assertFalse(reLoginDialog.isVisible)
+    }
+
+    @Test
+    fun `exit session setting dialog triggers Ok button click`() {
+        IBAutoLogin(storage)
+
+        val exitSessionDialog = JDialog()
+        val button = JButton("OK").apply {
+            addActionListener {
+                exitSessionDialog.isVisible = false
+            }
+        }
+        exitSessionDialog.title = "U12345 Exit Session Setting"
+        exitSessionDialog.add(button)
+        exitSessionDialog.isVisible = true
+        EventQueue.invokeAndWait { /* pump */ }
+        assertFalse(exitSessionDialog.isVisible)
     }
 }
